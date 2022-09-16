@@ -60,12 +60,10 @@ export default class Battleship {
         this.winner = this.endOfGame();
     }
     endOfGame() {
-        let b1 = this.p1Ships.every(s => s.getPositions().every(c => c.isShot()));
-        if (b1) {
+        if (this.p1Ships.endOfGame()) {
             return Winner.PLAYER2;
         }
-        let b2 = this.p2Ships.every(s => s.getPositions().every(c => c.isShot()));
-        if (b2) {
+        if (this.p2Ships.endOfGame()) {
             return Winner.PLAYER1;
         }
         return Winner.NONE;

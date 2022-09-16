@@ -45,9 +45,11 @@ export default class Grid {
             let ship = [];
             for (let k = 0; k < shipSize; k++) {
                 if (dir === 0) {
+                    console.log(xCoord + k);
                     this.board[xCoord + k][yCoord] = State.SHIP;
                     ship.push(new Cell(xCoord + k, yCoord));
                 } else {
+                    console.log(yCoord + k);
                     this.board[xCoord][yCoord + k] = State.SHIP;
                     ship.push(new Cell(xCoord, yCoord + k));
                 }
@@ -75,5 +77,16 @@ export default class Grid {
     onBoard({ x, y }) {
         let inLimit = (value, limit) => value >= 0 && value < limit;
         return (inLimit(x, this.rows) && inLimit(y, this.cols));
+    }
+    endOfGame() {
+        let ok = true;
+        for (const ship of this.ships) {
+            for (let { x, y } of ship) {
+                if (this.matrix[x][y] === State.SHIP) {
+                    ok = false;
+                }
+            }
+        }
+        return ok;
     }
 }
