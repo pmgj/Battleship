@@ -11,7 +11,29 @@ caption {
 }
 
 td {
-    width: 40px;
-    height: 40px;
-    border: 1px solid black;
+    width: 34px;
+    height: 34px;
+    border: 2px solid #B4B4FF;
+    text-align: center;
+    /* padding: 2px; */
+}
+
+.ship,
+.shot {
+    border: 2px solid blue;
+    background-color: rgba(0, 0, 255, 0.05);
+    /* padding: 1px; */
+}
+
+.shot {
+    background-image: linear-gradient(to bottom right, transparent calc(50% - 1px), red, transparent calc(50% + 1px)), linear-gradient(to top right, transparent calc(50% - 1px), red, transparent calc(50% + 1px));
+    border: 2px solid red;
+}
+
+.water {
+    background-image: radial-gradient(10px at center, blue 1%, white 99%);
+}
+
+table + table .none:hover {
+    border: 2px solid green;
 }

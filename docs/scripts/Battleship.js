@@ -1,25 +1,18 @@
+import Grid from "./Grid.js";
 import Player from "./Player.js";
 import Winner from "./Winner.js";
 import Ship from "./Ship.js";
 
 export default class Battleship {
-    constructor() {
-        this.p1Ships = null;
-        this.p2Ships = null;
-        this.rows = 10;
-        this.cols = 10;
+    constructor(nrows, ncols) {
+        this.p1Ships = new Grid(nrows, ncols);
+        this.p2Ships = new Grid(nrows, ncols);
+        this.rows = nrows;
+        this.cols = ncols;
         this.turn = Player.PLAYER1;
         this.winner = Winner.NONE;
     }
-    setData(rows, cols, p1Ships, p2Ships) {
-        this.rows = rows;
-        this.cols = cols;
-        if (!p1Ships.every(s => s.every(c => this.onBoard(c)))) {
-            throw new Error("One ship is not on the board.");
-        }
-        if (!p2Ships.every(s => s.every(c => this.onBoard(c)))) {
-            throw new Error("One ship is not on the board.");
-        }
+    setData(p1Ships, p2Ships) {
         if (p1Ships.length != p2Ships.length) {
             throw new Exception("The number of ships of players is different.");
         }
@@ -32,18 +25,12 @@ export default class Battleship {
                 throw new Error("The size of the ships of players is different.");
             }
         }
-        let tempList = p1Ships.flat();
-        let tempSet = p1Ships.flat();
-        if (tempList.length !== tempSet.length) {
-            throw new Error("There are ships overlapping.");
-        }
-        tempList = p2Ships.flat();
-        tempSet = p2Ships.flat();
-        if (tempList.length != tempSet.length) {
-            throw new Exception("There are ships overlapping.");
-        }
-        this.p1Ships = p1Ships.map(s => new Ship(s));
-        this.p2Ships = p2Ships.map(s => new Ship(s));
+        this.p1Ships.placeShips(p1Ships);
+        this.p2Ships.placeShips(p2Ships);
+    }
+    setRandomShips(sizes) {
+        this.p1Ships.placeShipsRandomly(sizes);
+        this.p2Ships.placeShipsRandomly(sizes);
     }
     getTurn() {
         return this.turn;
