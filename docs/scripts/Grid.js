@@ -29,11 +29,11 @@ export default class Grid {
                 xCoord = this.getRandomInt(0, this.rows - 1); //get a random x coordinate
                 yCoord = this.getRandomInt(0, this.cols - 1); //get a random y coordinate                
                 dir = this.getRandomInt(0, 1); //get a random direction, 0 = vertical, 1 = horizontal
-                if ((this.board[xCoord][yCoord] === State.NONE) && (((dir === 0) && ((xCoord + shipSize) < this.rows)) || ((dir === 1) && ((yCoord + shipSize) < this.cols)))) {
+                if ((dir === 0 && xCoord + shipSize < this.rows) || (dir === 1 && yCoord + shipSize < this.cols)) {
                     for (let j = 0; j < shipSize; j++) {
-                        if ((dir === 0) && this.testCellPosition(new Cell(xCoord + j, yCoord))) {
+                        if (dir === 0 && this.testCellPosition(new Cell(xCoord + j, yCoord))) {
                             overlap = true;
-                        } else if ((dir === 1) && this.testCellPosition(new Cell(xCoord, yCoord + j))) {
+                        } else if (dir === 1 && this.testCellPosition(new Cell(xCoord, yCoord + j))) {
                             overlap = true;
                         }
                     }
@@ -45,11 +45,9 @@ export default class Grid {
             let ship = [];
             for (let k = 0; k < shipSize; k++) {
                 if (dir === 0) {
-                    console.log(xCoord + k);
                     this.board[xCoord + k][yCoord] = State.SHIP;
                     ship.push(new Cell(xCoord + k, yCoord));
                 } else {
-                    console.log(yCoord + k);
                     this.board[xCoord][yCoord + k] = State.SHIP;
                     ship.push(new Cell(xCoord, yCoord + k));
                 }
@@ -88,5 +86,16 @@ export default class Grid {
             }
         }
         return ok;
+    }
+    getBoard() {
+        return this.board;
+    }
+    getCodifiedBoard() {
+        let matrix = JSON.parse(JSON.stringify(this.board));
+        for (let i = 0; i < matrix.length; i++) {
+            for (let j = 0; j < matrix[i].length; j++) {
+                matrix[i][j] = matrix[i][j] === State.SHIP ? State.NONE : matrix[i][j];
+            }
+        }
     }
 }

@@ -1,7 +1,6 @@
 import Grid from "./Grid.js";
 import Player from "./Player.js";
 import Winner from "./Winner.js";
-import Ship from "./Ship.js";
 
 export default class Battleship {
     constructor(nrows, ncols) {
@@ -38,6 +37,12 @@ export default class Battleship {
     getWinner() {
         return this.winner;
     }
+    getRows() {
+        return this.rows;
+    }
+    getCols() {
+        return this.cols;
+    }
     play(player, endCell) {
         if (this.winner != Winner.NONE) {
             throw new Error("This game is already finished.");
@@ -58,6 +63,9 @@ export default class Battleship {
         }
         this.turn = this.turn == Player.PLAYER1 ? Player.PLAYER2 : Player.PLAYER1;
         this.winner = this.endOfGame();
+    }
+    getGrid(player) {
+        return player === Player.PLAYER1 ? this.p1Ships : this.p2Ships;
     }
     endOfGame() {
         if (this.p1Ships.endOfGame()) {

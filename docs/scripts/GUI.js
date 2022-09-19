@@ -1,5 +1,8 @@
 import Battleship from "./Battleship.js";
 import State from "./State.js";
+import Player from "./Player.js";
+import Cell from "./Cell.js";
+import Winner from "./Winner.js";
 
 class GUI {
     constructor() {
@@ -17,7 +20,12 @@ class GUI {
                 let tr = document.createElement("tr");
                 for (let j = 0; j < this.cols; j++) {
                     let td = document.createElement("td");
-                    td.className = values && values[i][j] == State.SHIP ? "ship" : "none";
+                    if(values) {
+                        td.className = values[i][j] == State.SHIP ? "ship" : "none";
+                    } else {
+                        td.className = "none";
+                        td.onclick = this.play.bind(this);
+                    }
                     tr.appendChild(td);
                 }
                 table.appendChild(tr);
@@ -26,6 +34,16 @@ class GUI {
         createBoard(myBoard, this.game.p1Ships.board);
         createBoard(opBoard);
         console.table(this.game.p2Ships.board);
+    }
+    play(evt) {
+        let td = evt.currentTarget;
+        this.game.play(Player.PLAYER1, this.coordinates(td));
+        let winner = this.game.getWinner();
+        if(winner === Winner.NONE) {
+        }
+    }
+    coordinates(cell) {
+        return new Cell(cell.parentNode.rowIndex, cell.cellIndex);
     }
 }
 let gui = new GUI();
