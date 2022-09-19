@@ -3,6 +3,7 @@ import State from "./State.js";
 import Player from "./Player.js";
 import Cell from "./Cell.js";
 import Winner from "./Winner.js";
+import RandomPlayer from "./RandomPlayer.js";
 
 class GUI {
     constructor() {
@@ -10,6 +11,7 @@ class GUI {
         this.cols = 10;
         this.game = new Battleship(this.rows, this.cols);
         this.game.setRandomShips([5, 4, 3, 3, 2]);
+        this.computer = new RandomPlayer(this.game.getGrid(Player.PLAYER1).getCodifiedBoard());
     }
     init() {
         let tables = document.querySelectorAll("table");
@@ -37,9 +39,20 @@ class GUI {
     }
     play(evt) {
         let td = evt.currentTarget;
-        this.game.play(Player.PLAYER1, this.coordinates(td));
+        let shot = this.game.play(Player.PLAYER1, this.coordinates(td));
         let winner = this.game.getWinner();
+        td.className = shot.toLowerCase();
         if(winner === Winner.NONE) {
+            let cell = this.computer.play();
+            shot = this.game.play(Player.PLAYER2, cell);
+            this.computer.setResultShot(cell, shot);
+            let table = document.querySelector("table");
+            table.rows[cell.x].cells[cell.y].className = shot.toLowerCase();
+            winner = this.game.getWinner();
+        }
+        if(winner !== Winner.NONE) {
+            let message = document.querySelector("#message");
+            message.textContent = `Game over! ${winner === Player.PLAYER1 ? "You Win!" : "You lose!"}`;
         }
     }
     coordinates(cell) {

@@ -15,14 +15,12 @@ td {
     height: 34px;
     border: 2px solid #B4B4FF;
     text-align: center;
-    /* padding: 2px; */
 }
 
 .ship,
 .shot {
     border: 2px solid blue;
     background-color: rgba(0, 0, 255, 0.05);
-    /* padding: 1px; */
 }
 
 .shot {
@@ -36,4 +34,8 @@ td {
 
 table + table .none:hover {
     border: 2px solid green;
+}
+
+#message {
+    text-align: center;
 }

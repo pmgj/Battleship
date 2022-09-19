@@ -80,12 +80,18 @@ export default class Grid {
         let ok = true;
         for (const ship of this.ships) {
             for (let { x, y } of ship) {
-                if (this.matrix[x][y] === State.SHIP) {
+                if (this.board[x][y] === State.SHIP) {
                     ok = false;
                 }
             }
         }
         return ok;
+    }
+    getRows() {
+        return this.rows;
+    }
+    getCols() {
+        return this.cols;
     }
     getBoard() {
         return this.board;
@@ -97,5 +103,6 @@ export default class Grid {
                 matrix[i][j] = matrix[i][j] === State.SHIP ? State.NONE : matrix[i][j];
             }
         }
+        return matrix;
     }
 }
