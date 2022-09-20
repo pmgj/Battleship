@@ -4,9 +4,9 @@ import Winner from "./Winner.js";
 import State from "./State.js";
 
 export default class Battleship {
-    constructor(nrows, ncols) {
-        this.p1Ships = new Grid(nrows, ncols);
-        this.p2Ships = new Grid(nrows, ncols);
+    constructor(nrows, ncols, gui) {
+        this.p1Ships = new Grid(nrows, ncols, gui);
+        this.p2Ships = new Grid(nrows, ncols, gui);
         this.rows = nrows;
         this.cols = ncols;
         this.turn = Player.PLAYER1;
@@ -48,16 +48,10 @@ export default class Battleship {
         if (!this.onBoard(endCell)) {
             throw new Error("Shot is not on board.");
         }
-        let ships = player == Player.PLAYER1 ? this.p2Ships.getBoard() : this.p1Ships.getBoard();
-        let {x, y} = endCell;
-        if (ships[x][y] === State.SHOT || ships[x][y] === State.WATER) {
-            throw new Error("Cell already shot.");
-        }
-        ships[x][y] = ships[x][y] === State.SHIP ? State.SHOT : State.WATER;
-        let lastState = ships[x][y];
+        let ships = player == Player.PLAYER1 ? this.p2Ships : this.p1Ships;
+        ships.shot(endCell);
         this.turn = this.turn == Player.PLAYER1 ? Player.PLAYER2 : Player.PLAYER1;
         this.winner = this.endOfGame();
-        return lastState;
     }
     getGrid(player) {
         return player === Player.PLAYER1 ? this.p1Ships : this.p2Ships;

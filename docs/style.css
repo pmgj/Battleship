@@ -17,22 +17,21 @@ td {
     text-align: center;
 }
 
-.ship,
-.shot {
+.SHIP {
     border: 2px solid blue;
-    background-color: rgba(0, 0, 255, 0.05);
+    background-color: rgba(0, 0, 255, 0.1);
 }
 
-.shot {
-    background-image: linear-gradient(to bottom right, transparent calc(50% - 1px), red, transparent calc(50% + 1px)), linear-gradient(to top right, transparent calc(50% - 1px), red, transparent calc(50% + 1px));
+.SHOT {
     border: 2px solid red;
+    background-image: linear-gradient(to bottom right, transparent calc(50% - 1px), red, transparent calc(50% + 1px)), linear-gradient(to top right, transparent calc(50% - 1px), red, transparent calc(50% + 1px));
 }
 
-.water {
+.WATER {
     background-image: radial-gradient(10px at center, blue 1%, white 99%);
 }
 
-table + table .none:hover {
+table + table .NONE:hover {
     border: 2px solid green;
 }
 

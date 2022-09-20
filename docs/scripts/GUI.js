@@ -9,7 +9,7 @@ class GUI {
     constructor() {
         this.rows = 10;
         this.cols = 10;
-        this.game = new Battleship(this.rows, this.cols);
+        this.game = new Battleship(this.rows, this.cols, this);
         this.game.setRandomShips([5, 4, 3, 3, 2]);
         this.computer = new RandomPlayer(this.game.getGrid(Player.PLAYER1).getCodifiedBoard());
     }
@@ -22,10 +22,10 @@ class GUI {
                 let tr = document.createElement("tr");
                 for (let j = 0; j < this.cols; j++) {
                     let td = document.createElement("td");
-                    if(values) {
-                        td.className = values[i][j] == State.SHIP ? "ship" : "none";
+                    if (values) {
+                        td.className = values[i][j] == State.SHIP ? "SHIP" : "NONE";
                     } else {
-                        td.className = "none";
+                        td.className = "NONE";
                         td.onclick = this.play.bind(this);
                     }
                     tr.appendChild(td);
@@ -39,24 +39,29 @@ class GUI {
     }
     play(evt) {
         let td = evt.currentTarget;
-        let shot = this.game.play(Player.PLAYER1, this.coordinates(td));
+        this.game.play(Player.PLAYER1, this.coordinates(td));
         let winner = this.game.getWinner();
-        td.className = shot.toLowerCase();
-        if(winner === Winner.NONE) {
+        if (winner === Winner.NONE) {
             let cell = this.computer.play();
-            shot = this.game.play(Player.PLAYER2, cell);
-            this.computer.setResultShot(cell, shot);
-            let table = document.querySelector("table");
-            table.rows[cell.x].cells[cell.y].className = shot.toLowerCase();
+            this.game.play(Player.PLAYER2, cell);
             winner = this.game.getWinner();
         }
-        if(winner !== Winner.NONE) {
+        if (winner !== Winner.NONE) {
             let message = document.querySelector("#message");
             message.textContent = `Game over! ${winner === Player.PLAYER1 ? "You Win!" : "You lose!"}`;
         }
     }
     coordinates(cell) {
         return new Cell(cell.parentNode.rowIndex, cell.cellIndex);
+    }
+    gridChange(cell, value) {
+        let { x, y } = cell;
+        let i = this.game.getTurn() === Player.PLAYER1 ? 1 : 0;
+        let tables = document.querySelectorAll("table");
+        tables[i].rows[x].cells[y].className = value;
+        if (i === 0) {
+            this.computer.setResultShot(cell, value);
+        }
     }
 }
 let gui = new GUI();
