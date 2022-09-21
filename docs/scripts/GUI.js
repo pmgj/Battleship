@@ -1,9 +1,9 @@
-import Battleship from "./Battleship.js";
-import State from "./State.js";
-import Player from "./Player.js";
-import Cell from "./Cell.js";
-import Winner from "./Winner.js";
-import RandomPlayer from "./RandomPlayer.js";
+import Battleship from "./model/Battleship.js";
+import State from "./model/State.js";
+import Player from "./model/Player.js";
+import Cell from "./model/Cell.js";
+import Winner from "./model/Winner.js";
+import SmartPlayer from "./players/SmartPlayer.js";
 
 class GUI {
     constructor() {
@@ -11,7 +11,7 @@ class GUI {
         this.cols = 10;
         this.game = new Battleship(this.rows, this.cols);
         this.game.setRandomShips([5, 4, 3, 3, 2]);
-        this.computer = new RandomPlayer(this.game.getGrid(Player.PLAYER1).getBoard());
+        this.computer = new SmartPlayer(this.game.getGrid(Player.PLAYER1).getBoard());
     }
     init() {
         let tables = document.querySelectorAll("table");
@@ -22,7 +22,12 @@ class GUI {
                 let tr = document.createElement("tr");
                 for (let j = 0; j < this.cols; j++) {
                     let td = document.createElement("td");
-                    td.execute = state => td.className = state;
+                    td.execute = state => {
+                        td.className = state;
+                        if (values) {
+                            this.computer.setLastShot(state);
+                        }
+                    };
                     if (values) {
                         td.className = values[i][j].getState() == State.SHIP ? "SHIP" : "NONE";
                         this.game.p1Ships.addObserver(new Cell(i, j), td);
@@ -38,7 +43,7 @@ class GUI {
         };
         createBoard(myBoard, this.game.p1Ships.hiddenBoard);
         createBoard(opBoard);
-        console.table(this.game.p2Ships.hiddenBoard);
+        // console.table(this.game.p2Ships.hiddenBoard);
     }
     play(evt) {
         let td = evt.currentTarget;
