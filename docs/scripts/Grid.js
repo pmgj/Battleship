@@ -1,14 +1,15 @@
 import Cell from "./Cell.js";
 import Ship from "./Ship.js";
 import State from "./State.js";
+import CellState from "./CellState.js";
 
 export default class Grid {
-    constructor(nrows, ncols, gui) {
+    constructor(nrows, ncols) {
         this.rows = nrows;
         this.cols = ncols;
         this.ships = [];
-        this.board = Array(this.rows).fill().map(() => Array(this.cols).fill(State.NONE));
-        this.gui = gui;
+        this.hiddenBoard = Array(this.rows).fill().map(() => Array(this.cols).fill());
+        this.openBoard = null;
     }
     placeShips(ships) {
         if (!ships.every(s => s.every(c => this.onBoard(c)))) {
@@ -22,6 +23,11 @@ export default class Grid {
         this.ships = ships.map(s => new Ship(s));
     }
     placeShipsRandomly(sizes) {
+        for (let i = 0; i < this.rows; i++) {
+            for (let j = 0; j < this.cols; j++) {
+                this.hiddenBoard[i][j] = new CellState(State.NONE);
+            }
+        }
         let dir = 0, xCoord = 0, yCoord = 0, flag = true, overlap = false;
         for (let shipSize of sizes) {
             flag = true;
@@ -46,15 +52,16 @@ export default class Grid {
             let ship = [];
             for (let k = 0; k < shipSize; k++) {
                 if (dir === 0) {
-                    this.board[xCoord + k][yCoord] = State.SHIP;
+                    this.hiddenBoard[xCoord + k][yCoord].setState(State.SHIP);
                     ship.push(new Cell(xCoord + k, yCoord));
                 } else {
-                    this.board[xCoord][yCoord + k] = State.SHIP;
+                    this.hiddenBoard[xCoord][yCoord + k].setState(State.SHIP);
                     ship.push(new Cell(xCoord, yCoord + k));
                 }
             }
             this.ships.push(ship);
         }
+        this.openBoard = this.getCodifiedBoard();
     }
     getRandomInt(min, max) {
         min = Math.ceil(min);
@@ -68,7 +75,7 @@ export default class Grid {
     testCell(cell) {
         if (this.onBoard(cell)) {
             let { x, y } = cell;
-            return this.board[x][y] === State.SHIP;
+            return this.hiddenBoard[x][y].getState() === State.SHIP;
         } else {
             return false;
         }
@@ -81,7 +88,7 @@ export default class Grid {
         let ok = true;
         for (const ship of this.ships) {
             for (let { x, y } of ship) {
-                if (this.board[x][y] === State.SHIP) {
+                if (this.hiddenBoard[x][y].getState() === State.SHIP) {
                     ok = false;
                 }
             }
@@ -95,31 +102,35 @@ export default class Grid {
         return this.cols;
     }
     getBoard() {
-        return this.board;
+        return this.openBoard;
     }
     shot(cell) {
         let { x, y } = cell;
-        if (this.board[x][y] === State.SHOT || this.board[x][y] === State.WATER) {
+        if (this.hiddenBoard[x][y].getState() === State.SHOT || this.hiddenBoard[x][y].getState() === State.WATER) {
             throw new Error("Cell already shot.");
         }
-        this.board[x][y] = this.board[x][y] === State.SHIP ? State.SHOT : State.WATER;
-        this.gui.gridChange(cell, this.board[x][y]);
-        this.ships.filter(ship => ship.every(({ x, y }) => this.board[x][y] !== State.SHIP)).forEach(ship => ship.forEach(p => this.shootHV(p)));
+        let newstate = this.hiddenBoard[x][y].getState() === State.SHIP ? State.SHOT : State.WATER;
+        this.hiddenBoard[x][y].setState(newstate);
+        this.openBoard[x][y].setState(newstate);
+        this.ships.filter(ship => ship.every(({ x, y }) => this.hiddenBoard[x][y].getState() !== State.SHIP)).forEach(ship => ship.forEach(p => this.shootHV(p)));
     }
     getCodifiedBoard() {
-        let matrix = JSON.parse(JSON.stringify(this.board));
-        for (let i = 0; i < matrix.length; i++) {
-            for (let j = 0; j < matrix[i].length; j++) {
-                matrix[i][j] = matrix[i][j] === State.SHIP ? State.NONE : matrix[i][j];
+        let matrix = Array(this.rows).fill().map(() => Array(this.cols).fill(new CellState(State.NONE)));
+        for (let i = 0; i < this.rows; i++) {
+            for (let j = 0; j < this.cols; j++) {
+                matrix[i][j] = new CellState(this.hiddenBoard[i][j].getState() === State.SHIP ? State.NONE : this.hiddenBoard[i][j].getState());
             }
         }
         return matrix;
     }
     shootHV({ x: row, y: col }) {
         let cells = [new Cell(row - 1, col - 1), new Cell(row - 1, col), new Cell(row - 1, col + 1), new Cell(row, col - 1), new Cell(row, col + 1), new Cell(row + 1, col - 1), new Cell(row + 1, col), new Cell(row + 1, col + 1)];
-        cells.filter(cell => this.onBoard(cell) && this.board[cell.x][cell.y] === State.NONE).forEach(cell => {
-            this.board[cell.x][cell.y] = State.WATER;
-            this.gui.gridChange(cell, State.WATER);
+        cells.filter(cell => this.onBoard(cell) && this.hiddenBoard[cell.x][cell.y].getState() === State.NONE).forEach(cell => {
+            this.hiddenBoard[cell.x][cell.y].setState(State.WATER);
+            this.openBoard[cell.x][cell.y].setState(State.WATER);
         });
+    }
+    addObserver({x, y}, obj) {
+        this.hiddenBoard[x][y].setObserver(obj);
     }
 }

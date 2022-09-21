@@ -9,9 +9,9 @@ class GUI {
     constructor() {
         this.rows = 10;
         this.cols = 10;
-        this.game = new Battleship(this.rows, this.cols, this);
+        this.game = new Battleship(this.rows, this.cols);
         this.game.setRandomShips([5, 4, 3, 3, 2]);
-        this.computer = new RandomPlayer(this.game.getGrid(Player.PLAYER1).getCodifiedBoard());
+        this.computer = new RandomPlayer(this.game.getGrid(Player.PLAYER1).getBoard());
     }
     init() {
         let tables = document.querySelectorAll("table");
@@ -22,20 +22,23 @@ class GUI {
                 let tr = document.createElement("tr");
                 for (let j = 0; j < this.cols; j++) {
                     let td = document.createElement("td");
+                    td.execute = state => td.className = state;
                     if (values) {
-                        td.className = values[i][j] == State.SHIP ? "SHIP" : "NONE";
+                        td.className = values[i][j].getState() == State.SHIP ? "SHIP" : "NONE";
+                        this.game.p1Ships.addObserver(new Cell(i, j), td);
                     } else {
                         td.className = "NONE";
                         td.onclick = this.play.bind(this);
+                        this.game.p2Ships.addObserver(new Cell(i, j), td);
                     }
                     tr.appendChild(td);
                 }
                 table.appendChild(tr);
             }
         };
-        createBoard(myBoard, this.game.p1Ships.board);
+        createBoard(myBoard, this.game.p1Ships.hiddenBoard);
         createBoard(opBoard);
-        console.table(this.game.p2Ships.board);
+        console.table(this.game.p2Ships.hiddenBoard);
     }
     play(evt) {
         let td = evt.currentTarget;
@@ -53,15 +56,6 @@ class GUI {
     }
     coordinates(cell) {
         return new Cell(cell.parentNode.rowIndex, cell.cellIndex);
-    }
-    gridChange(cell, value) {
-        let { x, y } = cell;
-        let i = this.game.getTurn() === Player.PLAYER1 ? 1 : 0;
-        let tables = document.querySelectorAll("table");
-        tables[i].rows[x].cells[y].className = value;
-        if (i === 0) {
-            this.computer.setResultShot(cell, value);
-        }
     }
 }
 let gui = new GUI();

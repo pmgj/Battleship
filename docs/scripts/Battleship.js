@@ -1,12 +1,11 @@
 import Grid from "./Grid.js";
 import Player from "./Player.js";
 import Winner from "./Winner.js";
-import State from "./State.js";
 
 export default class Battleship {
-    constructor(nrows, ncols, gui) {
-        this.p1Ships = new Grid(nrows, ncols, gui);
-        this.p2Ships = new Grid(nrows, ncols, gui);
+    constructor(nrows, ncols) {
+        this.p1Ships = new Grid(nrows, ncols);
+        this.p2Ships = new Grid(nrows, ncols);
         this.rows = nrows;
         this.cols = ncols;
         this.turn = Player.PLAYER1;
