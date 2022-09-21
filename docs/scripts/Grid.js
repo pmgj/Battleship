@@ -9,7 +9,7 @@ export default class Grid {
         this.cols = ncols;
         this.ships = [];
         this.hiddenBoard = Array(this.rows).fill().map(() => Array(this.cols).fill());
-        this.openBoard = null;
+        this.openBoard = Array(this.rows).fill().map(() => Array(this.cols).fill());
     }
     placeShips(ships) {
         if (!ships.every(s => s.every(c => this.onBoard(c)))) {
@@ -26,6 +26,7 @@ export default class Grid {
         for (let i = 0; i < this.rows; i++) {
             for (let j = 0; j < this.cols; j++) {
                 this.hiddenBoard[i][j] = new CellState(State.NONE);
+                this.openBoard[i][j] = new CellState(State.NONE);
             }
         }
         let dir = 0, xCoord = 0, yCoord = 0, flag = true, overlap = false;
@@ -61,7 +62,6 @@ export default class Grid {
             }
             this.ships.push(ship);
         }
-        this.openBoard = this.getCodifiedBoard();
     }
     getRandomInt(min, max) {
         min = Math.ceil(min);
@@ -113,15 +113,6 @@ export default class Grid {
         this.hiddenBoard[x][y].setState(newstate);
         this.openBoard[x][y].setState(newstate);
         this.ships.filter(ship => ship.every(({ x, y }) => this.hiddenBoard[x][y].getState() !== State.SHIP)).forEach(ship => ship.forEach(p => this.shootHV(p)));
-    }
-    getCodifiedBoard() {
-        let matrix = Array(this.rows).fill().map(() => Array(this.cols).fill(new CellState(State.NONE)));
-        for (let i = 0; i < this.rows; i++) {
-            for (let j = 0; j < this.cols; j++) {
-                matrix[i][j] = new CellState(this.hiddenBoard[i][j].getState() === State.SHIP ? State.NONE : this.hiddenBoard[i][j].getState());
-            }
-        }
-        return matrix;
     }
     shootHV({ x: row, y: col }) {
         let cells = [new Cell(row - 1, col - 1), new Cell(row - 1, col), new Cell(row - 1, col + 1), new Cell(row, col - 1), new Cell(row, col + 1), new Cell(row + 1, col - 1), new Cell(row + 1, col), new Cell(row + 1, col + 1)];

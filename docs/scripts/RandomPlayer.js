@@ -1,6 +1,5 @@
 import Cell from "./Cell.js";
 import State from "./State.js";
-import CellState from "./CellState.js";
 
 export default class RandomPlayer {
     constructor(grid) {
