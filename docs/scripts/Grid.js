@@ -1,6 +1,6 @@
-import State from "./State.js";
 import Cell from "./Cell.js";
 import Ship from "./Ship.js";
+import State from "./State.js";
 
 export default class Grid {
     constructor(nrows, ncols, gui) {
@@ -104,7 +104,7 @@ export default class Grid {
         }
         this.board[x][y] = this.board[x][y] === State.SHIP ? State.SHOT : State.WATER;
         this.gui.gridChange(cell, this.board[x][y]);
-        this.fillUnuseful();
+        this.ships.filter(ship => ship.every(({ x, y }) => this.board[x][y] !== State.SHIP)).forEach(ship => ship.forEach(p => this.shootHV(p)));
     }
     getCodifiedBoard() {
         let matrix = JSON.parse(JSON.stringify(this.board));
@@ -115,28 +115,11 @@ export default class Grid {
         }
         return matrix;
     }
-    fillUnuseful() {
-        for (let ship of this.ships) {
-            if (this.testDestroyedShip(ship)) {
-                for (let p of ship) {
-                    this.shootHV(p);
-                }
-            }
-        }
-    }
-    testDestroyedShip(ship) {
-        return ship.every(({x, y}) => this.board[x][y] !== State.SHIP);
-    }
     shootHV({ x: row, y: col }) {
         let cells = [new Cell(row - 1, col - 1), new Cell(row - 1, col), new Cell(row - 1, col + 1), new Cell(row, col - 1), new Cell(row, col + 1), new Cell(row + 1, col - 1), new Cell(row + 1, col), new Cell(row + 1, col + 1)];
-        for (let cell of cells) {
-            if (this.onBoard(cell)) {
-                let { x, y } = cell;
-                if (this.board[x][y] === State.NONE) {
-                    this.board[x][y] = State.WATER;
-                    this.gui.gridChange(cell, State.WATER);
-                }
-            }
-        }
+        cells.filter(cell => this.onBoard(cell) && this.board[cell.x][cell.y] === State.NONE).forEach(cell => {
+            this.board[cell.x][cell.y] = State.WATER;
+            this.gui.gridChange(cell, State.WATER);
+        });
     }
 }
