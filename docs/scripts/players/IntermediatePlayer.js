@@ -2,7 +2,7 @@ import Cell from "../model/Cell.js";
 import State from "../model/State.js";
 import AbstractPlayer from "./AbstractPlayer.js";
 
-export default class SmartPlayer extends AbstractPlayer {
+export default class IntermediatePlayer extends AbstractPlayer {
     constructor(grid) {
         super(grid);
     }
@@ -10,12 +10,12 @@ export default class SmartPlayer extends AbstractPlayer {
         for (let i = 0; i < this.grid.length; i++) {
             for (let j = 0; j < this.grid[i].length; j++) {
                 const obj = this.grid[i][j];
-                if(obj.getState() === State.SHOT) {
+                if (obj.getState() === State.SHOT) {
                     let borders = [new Cell(i - 1, j), new Cell(i, j + 1), new Cell(i + 1, j), new Cell(i, j - 1)];
                     let temp = borders.find(c => this.onBoard(c) && this.grid[c.x][c.y].getState() === State.NONE);
                     if (temp) {
                         return temp;
-                    }        
+                    }
                 }
             }
         }

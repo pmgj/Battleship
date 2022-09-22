@@ -1,12 +1,12 @@
 import AbstractPlayer from "./AbstractPlayer.js";
 
-export default class RandomPlayer extends AbstractPlayer{
+export default class BeginnerPlayer extends AbstractPlayer {
     constructor(grid) {
         super(grid);
     }
     play() {
         let cell = this.getRandomCell(this.getRandomInt(0, this.rows * this.cols - 1));
-        if(!cell) {
+        if (!cell) {
             cell = this.getRandomCell();
         }
         return cell;

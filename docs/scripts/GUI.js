@@ -3,7 +3,7 @@ import State from "./model/State.js";
 import Player from "./model/Player.js";
 import Cell from "./model/Cell.js";
 import Winner from "./model/Winner.js";
-import SmartPlayer from "./players/SmartPlayer.js";
+import AdvancedPlayer from "./players/AdvancedPlayer.js";
 
 class GUI {
     constructor() {
@@ -11,7 +11,7 @@ class GUI {
         this.cols = 10;
         this.game = new Battleship(this.rows, this.cols);
         this.game.setRandomShips([5, 4, 3, 3, 2]);
-        this.computer = new SmartPlayer(this.game.getGrid(Player.PLAYER1).getBoard());
+        this.computer = new AdvancedPlayer(this.game.getGrid(Player.PLAYER1).getBoard());
     }
     init() {
         let tables = document.querySelectorAll("table");
