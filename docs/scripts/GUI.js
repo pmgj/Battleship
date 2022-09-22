@@ -22,12 +22,7 @@ class GUI {
                 let tr = document.createElement("tr");
                 for (let j = 0; j < this.cols; j++) {
                     let td = document.createElement("td");
-                    td.execute = state => {
-                        td.className = state;
-                        if (values) {
-                            this.computer.setLastShot(state);
-                        }
-                    };
+                    td.execute = state => td.className = state;
                     if (values) {
                         td.className = values[i][j].getState() == State.SHIP ? "SHIP" : "NONE";
                         this.game.p1Ships.addObserver(new Cell(i, j), td);

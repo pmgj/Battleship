@@ -6,7 +6,6 @@ export default class AbstractPlayer {
         this.grid = grid;
         this.rows = this.grid.length;
         this.cols = this.grid[0].length;
-        this.lastShot = State.NONE;
     }
     getRandomCell(start = 0) {
         let array = this.grid.flat();
@@ -21,7 +20,8 @@ export default class AbstractPlayer {
         max = Math.floor(max);
         return Math.floor(Math.random() * (max - min + 1) + min);
     }
-    setLastShot(state) {
-        this.lastShot = state;
+    onBoard({ x, y }) {
+        let inLimit = (value, limit) => value >= 0 && value < limit;
+        return (inLimit(x, this.rows) && inLimit(y, this.cols));
     }
 }
