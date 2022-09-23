@@ -2,27 +2,27 @@ package model;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 public class Battleship {
-    private List<Ship> p1Ships;
-    private List<Ship> p2Ships;
+    private Grid p1Ships;
+    private Grid p2Ships;
     private int rows;
     private int cols;
     private Player turn = Player.PLAYER1;
     private Winner winner = Winner.NONE;
 
-    public void setData(int rows, int cols, List<List<Cell>> p1Ships, List<List<Cell>> p2Ships) throws Exception {
-        this.rows = rows;
-        this.cols = cols;
-        if (!p1Ships.stream().allMatch(s -> s.stream().allMatch(c -> this.onBoard(c)))) {
-            throw new Exception("One ship is not on the board.");
-        }
-        if (!p2Ships.stream().allMatch(s -> s.stream().allMatch(c -> this.onBoard(c)))) {
-            throw new Exception("One ship is not on the board.");
-        }
+    public Battleship(int nrows, int ncols) {
+        this.p1Ships = new Grid(nrows, ncols);
+        this.p2Ships = new Grid(nrows, ncols);
+        this.rows = nrows;
+        this.cols = ncols;
+        this.turn = Player.PLAYER1;
+        this.winner = Winner.NONE;
+    }
+
+    public void setData(List<List<Cell>> p1Ships, List<List<Cell>> p2Ships) throws Exception {
         if (p1Ships.size() != p2Ships.size()) {
             throw new Exception("The number of ships of players is different.");
         }
@@ -35,18 +35,13 @@ public class Battleship {
                 throw new Exception("The size of the ships of players is different.");
             }
         }
-        List<Cell> tempList = p1Ships.stream().flatMap(List::stream).collect(Collectors.toList());
-        Set<Cell> tempSet = p1Ships.stream().flatMap(List::stream).collect(Collectors.toSet());
-        if (tempList.size() != tempSet.size()) {
-            throw new Exception("There are ships overlapping.");
-        }
-        tempList = p2Ships.stream().flatMap(List::stream).collect(Collectors.toList());
-        tempSet = p2Ships.stream().flatMap(List::stream).collect(Collectors.toSet());
-        if (tempList.size() != tempSet.size()) {
-            throw new Exception("There are ships overlapping.");
-        }
-        this.p1Ships = p1Ships.stream().map(s -> new Ship(s)).collect(Collectors.toList());
-        this.p2Ships = p2Ships.stream().map(s -> new Ship(s)).collect(Collectors.toList());
+        this.p1Ships.placeShips(p1Ships);
+        this.p2Ships.placeShips(p2Ships);
+    }
+
+    public void setRandomShips(int[] sizes) {
+        this.p1Ships.placeShipsRandomly(sizes);
+        this.p2Ships.placeShipsRandomly(sizes);
     }
 
     public Player getTurn() {
@@ -57,35 +52,31 @@ public class Battleship {
         return winner;
     }
 
-    public void play(Player player, Cell endCell) throws Exception {
+    public void play(Player player, Cell endCell) {
         if (this.winner != Winner.NONE) {
-            throw new Exception("This game is already finished.");
+            throw new IllegalArgumentException("This game is already finished.");
         }
         if (player != this.turn) {
-            throw new Exception("It's not your turn.");
+            throw new IllegalArgumentException("It's not your turn.");
         }
         if (!this.onBoard(endCell)) {
-            throw new Exception("Shot is not on board.");
+            throw new IllegalArgumentException("Shot is not on board.");
         }
-        List<Ship> ships = player == Player.PLAYER1 ? this.p1Ships : this.p2Ships;
-        for (Ship ship : ships) {
-            for (Position p : ship.getPositions()) {
-                if (p.getCell().equals(endCell)) {
-                    p.setShot(true);
-                }
-            }
-        }
+        Grid ships = player == Player.PLAYER1 ? this.p1Ships : this.p2Ships;
+        ships.shot(endCell);
         this.turn = this.turn == Player.PLAYER1 ? Player.PLAYER2 : Player.PLAYER1;
         this.winner = this.endOfGame();
     }
 
+    public Grid getGrid(Player player) {
+        return player == Player.PLAYER1 ? this.p1Ships : this.p2Ships;
+    }
+
     private Winner endOfGame() {
-        boolean b1 = this.p1Ships.stream().allMatch(s -> s.getPositions().stream().allMatch(c -> c.isShot()));
-        if (b1) {
+        if (this.p1Ships.endOfGame()) {
             return Winner.PLAYER2;
         }
-        boolean b2 = this.p2Ships.stream().allMatch(s -> s.getPositions().stream().allMatch(c -> c.isShot()));
-        if (b2) {
+        if (this.p2Ships.endOfGame()) {
             return Winner.PLAYER1;
         }
         return Winner.NONE;
@@ -96,7 +87,7 @@ public class Battleship {
         return (inLimit.apply(cell.getX(), this.rows) && inLimit.apply(cell.getY(), this.cols));
     }
 
-    private String printBoard(List<Ship> ships) {
+    private String printBoard(Grid grid) {
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i <= this.rows * 4; i++) {
             sb.append("-");
@@ -105,16 +96,8 @@ public class Battleship {
         for (int i = 0; i < this.rows; i++) {
             for (int j = 0; j < this.cols; j++) {
                 sb.append("|");
-                Cell cell = new Cell(i, j);
-                Position position = null;
-                for (Ship ship : ships) {
-                    for (Position p : ship.getPositions()) {
-                        if (p.getCell().equals(cell)) {
-                            position = p;
-                        }
-                    }
-                }        
-                sb.append(position == null ? "   " : position.isShot() ? " X " : " S ");
+                Cell position = null;
+                sb.append(position == null ? "   " : grid.getBoard()[i][j].getState() == State.SHOT ? " X " : " S ");
             }
             sb.append("|\n");
             for (int j = 0; j <= this.rows * 4; j++) {

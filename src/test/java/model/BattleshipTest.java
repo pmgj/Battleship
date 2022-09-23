@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 public class BattleshipTest {
     @Test
     public void testInitialState() {
-        Battleship b = new Battleship();
+        Battleship b = new Battleship(10, 10);
 
         try {
             List<List<Cell>> p1Ships = new ArrayList<>();
@@ -25,7 +25,7 @@ public class BattleshipTest {
             ship = List.of(new Cell(10, 5), new Cell(10, 6));
             p1Ships.add(ship);
             List<List<Cell>> p2Ships = new ArrayList<>();
-            b.setData(10, 10, p1Ships, p2Ships);
+            b.setData(p1Ships, p2Ships);
             Assertions.fail();
         } catch (Exception ex) {
         }
@@ -52,7 +52,7 @@ public class BattleshipTest {
             p2Ships.add(ship);
             ship = List.of(new Cell(1, 0), new Cell(2, 0), new Cell(3, 0));
             p2Ships.add(ship);
-            b.setData(10, 10, p1Ships, p2Ships);
+            b.setData(p1Ships, p2Ships);
             Assertions.fail();
         } catch (Exception ex) {
         }
@@ -81,7 +81,7 @@ public class BattleshipTest {
             p2Ships.add(ship);
             ship = List.of(new Cell(4, 9));
             p2Ships.add(ship);
-            b.setData(10, 10, p1Ships, p2Ships);
+            b.setData(p1Ships, p2Ships);
             Assertions.fail();
         } catch (Exception ex) {
         }
@@ -110,7 +110,7 @@ public class BattleshipTest {
             p2Ships.add(ship);
             ship = List.of(new Cell(4, 9), new Cell(5, 9));
             p2Ships.add(ship);
-            b.setData(10, 10, p1Ships, p2Ships);
+            b.setData(p1Ships, p2Ships);
             Assertions.fail();
         } catch (Exception ex) {
         }
@@ -139,7 +139,7 @@ public class BattleshipTest {
             p2Ships.add(ship);
             ship = List.of(new Cell(4, 9), new Cell(5, 9));
             p2Ships.add(ship);
-            b.setData(10, 10, p1Ships, p2Ships);
+            b.setData(p1Ships, p2Ships);
         } catch (Exception ex) {
             Assertions.fail();
         }
