@@ -51,7 +51,7 @@ class GUI {
         }
         if (winner !== Winner.NONE) {
             let message = document.querySelector("#message");
-            message.textContent = `Game over! ${winner === Player.PLAYER1 ? "You Win!" : "You lose!"}`;
+            message.textContent = `Game over! ${winner === Winner.PLAYER1 ? "You Win!" : "You lose!"}`;
         }
     }
     coordinates(cell) {

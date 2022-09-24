@@ -1,8 +1,11 @@
 package model;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+
 public class CellState {
     private State state;
-    private Object observer;
+    private final PropertyChangeSupport squareObservers = new PropertyChangeSupport(this);
 
     public CellState(State newstate) {
         this.state = newstate;
@@ -16,7 +19,7 @@ public class CellState {
         this.state = state;
     }
 
-    public void setObserver(Object observer) {
-        this.observer = observer;
+    public void addSquareObservers(PropertyChangeListener pcl) {
+        squareObservers.addPropertyChangeListener(pcl);
     }
 }

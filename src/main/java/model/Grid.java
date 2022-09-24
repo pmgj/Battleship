@@ -7,6 +7,8 @@ import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
+import view.Square;
+
 public class Grid {
     private int rows;
     private int cols;
@@ -148,7 +150,7 @@ public class Grid {
         });
     }
 
-    public void addObserver(Cell cell, Object obj) {
-        this.hiddenBoard[cell.getX()][cell.getY()].setObserver(obj);
+    public void addObserver(Cell cell, Square square) {
+        this.hiddenBoard[cell.getX()][cell.getY()].addSquareObservers(square);
     }
 }
