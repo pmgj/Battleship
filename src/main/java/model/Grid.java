@@ -150,7 +150,7 @@ public class Grid {
         var newstate = this.hiddenBoard[x][y].getState() == State.SHIP ? State.SHOT : State.WATER;
         this.hiddenBoard[x][y].setState(newstate);
         this.openBoard[x][y].setState(newstate);
-        this.ships.stream().filter(ship -> ship.getPositions().stream().allMatch(c -> this.hiddenBoard[c.getX()][c.getY()].getState() != State.SHIP)).forEach(ship -> ship.getPositions().stream().forEach(p -> this.shootHV(p)));
+        this.ships.stream().filter(ship -> ship.getPositions().stream().allMatch(c -> this.hiddenBoard[c.getX()][c.getY()].getState() != State.SHIP)).forEach(ship2 -> ship2.getPositions().stream().forEach(p -> this.shootHV(p)));
     }
 
     private void shootHV(Cell cell) {

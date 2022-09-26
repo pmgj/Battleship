@@ -18,12 +18,12 @@ public class AdvancedPlayer extends AbstractPlayer {
                 var obj = this.grid[i][j];
                 if (obj.getState() == State.SHOT) {
                     var cell = this.shipDestroyed(new Cell(i, j));
-                    if (cell.isEmpty()) {
+                    if (!cell.isEmpty()) {
                         return cell.get();
                     }
                     var borders = List.of(new Cell(i - 1, j), new Cell(i, j + 1), new Cell(i + 1, j), new Cell(i, j - 1));
                     var temp = borders.stream().filter(c -> this.onBoard(c) && this.grid[c.getX()][c.getY()].getState() == State.NONE).findFirst();
-                    if (temp.isEmpty()) {
+                    if (!temp.isEmpty()) {
                         return temp.get();
                     }
                 }

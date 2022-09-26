@@ -9,6 +9,8 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.JButton;
 
+import model.CellState;
+
 public class Square extends JButton implements PropertyChangeListener {
     public Square() {
         this.setBackground(Color.DARK_GRAY);
@@ -19,6 +21,27 @@ public class Square extends JButton implements PropertyChangeListener {
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        System.out.println("Aqui!");
-    }    
+        CellState cellState = (CellState) evt.getSource();
+        this.setForeground(Color.WHITE);
+        this.setFont(this.getFont().deriveFont(Font.BOLD));
+        switch(cellState.getState()) {
+            case NONE:
+            this.setBackground(Color.BLUE);
+            this.setText(" ");
+            break;
+            case SHIP:
+            this.setBackground(Color.RED);
+            this.setText("S");
+            break;
+            case SHOT:
+            this.setBackground(Color.RED);
+            this.setText("S");
+            break;
+            case WATER:
+            this.setBackground(Color.BLUE);
+            this.setText(" ");
+            break;
+        }
+        this.setFocusPainted(false);
+    }
 }

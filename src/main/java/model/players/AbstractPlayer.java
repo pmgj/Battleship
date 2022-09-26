@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.Random;
 import java.util.function.BiFunction;
+import java.util.stream.Stream;
 
 import model.Cell;
 import model.CellState;
@@ -27,7 +28,7 @@ public abstract class AbstractPlayer {
     }
 
     protected Optional<Cell> getRandomCell(int start) {
-        CellState[] array = (CellState[]) Arrays.stream(this.grid).flatMap(Arrays::stream).toArray();
+        CellState[] array = Arrays.stream(this.grid).flatMap(Stream::of).toArray(CellState[]::new);
         for (var i = start; i < array.length; i++) {
             if (array[i].getState() == State.NONE) {
                 return Optional.of(new Cell(i / this.cols, i % this.cols));

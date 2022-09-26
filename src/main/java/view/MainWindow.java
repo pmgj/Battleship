@@ -73,7 +73,8 @@ public class MainWindow {
                             winner = game.getWinner();
                         }
                         if (winner != Winner.NONE) {
-                            JOptionPane.showMessageDialog(frame,"Game over!", winner == Winner.PLAYER1 ? "You Win!" : "You lose!", JOptionPane.WARNING_MESSAGE);
+                            JOptionPane.showMessageDialog(frame, winner == Winner.PLAYER1 ? "You Win!" : "You lose!",
+                                    "Game over!", JOptionPane.WARNING_MESSAGE);
                         }
                     }
                 });

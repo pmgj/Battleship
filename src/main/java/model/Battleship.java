@@ -62,8 +62,8 @@ public class Battleship {
         if (!this.onBoard(endCell)) {
             throw new IllegalArgumentException("Shot is not on board.");
         }
-        Grid ships = player == Player.PLAYER1 ? this.p1Ships : this.p2Ships;
-        ships.shot(endCell);
+        Grid grid = player == Player.PLAYER1 ? this.p2Ships : this.p1Ships;
+        grid.shot(endCell);
         this.turn = this.turn == Player.PLAYER1 ? Player.PLAYER2 : Player.PLAYER1;
         this.winner = this.endOfGame();
     }
