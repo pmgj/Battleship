@@ -34,6 +34,18 @@ public class Grid {
             throw new IllegalArgumentException("There are ships overlapping.");
         }
         this.ships = ships.stream().map(s -> new Ship(s)).collect(Collectors.toList());
+        for (int i = 0; i < this.rows; i++) {
+            for (int j = 0; j < this.cols; j++) {
+                this.hiddenBoard[i][j] = new CellState(State.NONE);
+                this.openBoard[i][j] = new CellState(State.NONE);
+            }
+        }
+        for(var ship : this.ships) {
+            for(var cell : ship.getPositions()) {
+                this.hiddenBoard[cell.getX()][cell.getY()] = new CellState(State.SHIP);
+                this.openBoard[cell.getX()][cell.getY()] = new CellState(State.NONE);
+            }
+        }
     }
 
     private boolean onBoard(Cell cell) {
