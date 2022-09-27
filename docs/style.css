@@ -1,8 +1,11 @@
 main {
-    display: grid;
-    grid-template-columns: 400px 400px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     gap: 20px;
+    max-width: 870px;
+    border: 1px solid black;
 }
 
 caption {
@@ -31,15 +34,10 @@ td {
     background-image: radial-gradient(10px at center, blue 1%, white 99%);
 }
 
-table + table .NONE:hover {
+table+table .NONE:hover {
     border: 2px solid green;
 }
 
 #message {
     text-align: center;
-}
-@media (max-width: 400px) {
-    main {
-        grid-template-columns: 1fr;
-    }
 }
