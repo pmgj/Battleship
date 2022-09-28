@@ -142,6 +142,10 @@ public class Grid {
         return openBoard;
     }
 
+    public CellState[][] getHiddenBoard() {
+        return hiddenBoard;
+    }
+
     public void shot(Cell cell) {
         int x = cell.getX(), y = cell.getY();
         if (this.hiddenBoard[x][y].getState() == State.SHOT || this.hiddenBoard[x][y].getState() == State.WATER) {

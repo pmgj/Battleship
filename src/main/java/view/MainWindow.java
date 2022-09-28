@@ -16,7 +16,9 @@ import javax.swing.SwingConstants;
 
 import model.Battleship;
 import model.Cell;
+import model.CellState;
 import model.Player;
+import model.State;
 import model.Winner;
 import model.players.AbstractPlayer;
 import model.players.AdvancedPlayer;
@@ -55,7 +57,11 @@ public class MainWindow {
         this.computer = new AdvancedPlayer(this.game.getGrid(Player.PLAYER1).getBoard());
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
+                CellState cs = this.game.getGrid(Player.PLAYER1).getHiddenBoard()[i][j];
                 Square b1 = new Square();
+                if(cs.getState() == State.SHIP) {
+                    b1.setShip();
+                }
                 playersBoard.add(b1);
                 this.game.getGrid(Player.PLAYER1).addObserver(new Cell(i, j), b1);
                 Square b2 = new Square();
