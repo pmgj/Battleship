@@ -151,6 +151,9 @@ public class Grid {
         if (this.hiddenBoard[x][y].getState() == State.SHOT || this.hiddenBoard[x][y].getState() == State.WATER) {
             throw new IllegalArgumentException("Cell already shot.");
         }
+        if (!this.onBoard(cell)) {
+            throw new IllegalArgumentException("Shot is not on board.");
+        }
         var newstate = this.hiddenBoard[x][y].getState() == State.SHIP ? State.SHOT : State.WATER;
         this.hiddenBoard[x][y].setState(newstate);
         this.openBoard[x][y].setState(newstate);

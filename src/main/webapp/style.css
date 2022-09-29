@@ -1,0 +1,54 @@
+main {
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    max-width: 870px;
+}
+
+caption {
+    font-weight: bold;
+    font-size: xx-large;
+}
+
+td {
+    width: 34px;
+    height: 34px;
+    border: 2px solid #B4B4FF;
+    text-align: center;
+}
+
+.SHIP {
+    border: 2px solid blue;
+    background-color: rgba(0, 0, 255, 0.1);
+}
+
+.SHOT {
+    border: 2px solid red;
+    background-image: linear-gradient(to bottom right, transparent calc(50% - 1px), red, transparent calc(50% + 1px)), linear-gradient(to top right, transparent calc(50% - 1px), red, transparent calc(50% + 1px));
+}
+
+.WATER {
+    background-image: radial-gradient(10px at center, blue 1%, white 99%);
+}
+
+table+table .NONE:hover {
+    border: 2px solid green;
+}
+
+p {
+    text-align: center;
+}
+
+.rooms {
+    grid-template-columns: 33% 33% 33%;
+    max-width: 40%;
+    margin: 0 auto;
+    gap: 10px;
+    display: grid;
+}
+
+.hide {
+    display: none;
+}

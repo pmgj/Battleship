@@ -2,7 +2,6 @@ package model;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 public class Battleship {
@@ -10,8 +9,8 @@ public class Battleship {
     private Grid p2Ships;
     private int rows;
     private int cols;
-    private Player turn = Player.PLAYER1;
-    private Winner winner = Winner.NONE;
+    private Player turn;
+    private Winner winner;
 
     public Battleship(int nrows, int ncols) {
         this.p1Ships = new Grid(nrows, ncols);
@@ -39,6 +38,13 @@ public class Battleship {
         this.p2Ships.placeShips(p2Ships);
     }
 
+    public void setWinner(Winner winner) {
+        if(this.winner != Winner.NONE) {
+            return;
+        }
+        this.winner = winner;
+    }
+
     public void setRandomShips(int[] sizes) {
         this.p1Ships.placeShipsRandomly(sizes);
         this.p2Ships.placeShipsRandomly(sizes);
@@ -59,9 +65,6 @@ public class Battleship {
         if (player != this.turn) {
             throw new IllegalArgumentException("It's not your turn.");
         }
-        if (!this.onBoard(endCell)) {
-            throw new IllegalArgumentException("Shot is not on board.");
-        }
         Grid grid = player == Player.PLAYER1 ? this.p2Ships : this.p1Ships;
         grid.shot(endCell);
         this.turn = this.turn == Player.PLAYER1 ? Player.PLAYER2 : Player.PLAYER1;
@@ -80,11 +83,6 @@ public class Battleship {
             return Winner.PLAYER1;
         }
         return Winner.NONE;
-    }
-
-    public boolean onBoard(Cell cell) {
-        BiFunction<Integer, Integer, Boolean> inLimit = (value, limit) -> value >= 0 && value < limit;
-        return (inLimit.apply(cell.getX(), this.rows) && inLimit.apply(cell.getY(), this.cols));
     }
 
     private String printBoard(Grid grid) {
