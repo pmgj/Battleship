@@ -17,6 +17,7 @@ import javax.swing.SwingConstants;
 import model.Battleship;
 import model.Cell;
 import model.CellState;
+import model.Grid;
 import model.Player;
 import model.State;
 import model.Winner;
@@ -31,7 +32,7 @@ public class MainWindow {
     private Battleship game;
     private AbstractPlayer computer;
 
-    public MainWindow() {
+    public MainWindow() throws Exception {
         JFrame frame = new JFrame("Battleship");
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
@@ -52,21 +53,26 @@ public class MainWindow {
         JPanel opponentsBoard = new JPanel(new GridLayout(rows, cols));
         opponentsPanel.add(opponentsBoard);
 
-        this.game = new Battleship(rows, cols);
-        this.game.setRandomShips(new int[] { 5, 4, 3, 3, 2 });
-        this.computer = new AdvancedPlayer(this.game.getGrid(Player.PLAYER1).getBoard());
+        this.game = new Battleship();
+        Grid grid1 = new Grid(rows, cols);
+        Grid grid2 = new Grid(rows, cols);
+        int[] qtt = new int[] { 5, 4, 3, 3, 2 };
+        grid1.placeShipsRandomly(qtt);
+        grid2.placeShipsRandomly(qtt);
+        this.game.setShips(grid1, grid2);
+        this.computer = new AdvancedPlayer(grid1.getBoard());
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                CellState cs = this.game.getGrid(Player.PLAYER1).getHiddenBoard()[i][j];
+                CellState cs = grid1.getHiddenBoard()[i][j];
                 Square b1 = new Square();
                 if(cs.getState() == State.SHIP) {
                     b1.setShip();
                 }
                 playersBoard.add(b1);
-                this.game.getGrid(Player.PLAYER1).addObserver(new Cell(i, j), b1);
+                grid1.addObserver(new Cell(i, j), b1);
                 Square b2 = new Square();
                 opponentsBoard.add(b2);
-                this.game.getGrid(Player.PLAYER2).addObserver(new Cell(i, j), b2);
+                grid2.addObserver(new Cell(i, j), b2);
                 final int x = i, y = j;
                 b2.addMouseListener(new MouseAdapter() {
                     @Override
@@ -106,6 +112,10 @@ public class MainWindow {
     }
 
     public static void main(String[] args) {
-        new MainWindow();
+        try {
+            new MainWindow();
+        } catch(Exception ex) {
+            System.out.println(ex.getMessage());
+        }
     }
 }

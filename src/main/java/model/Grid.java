@@ -25,6 +25,9 @@ public class Grid {
     }
 
     public void placeShips(List<List<Cell>> ships) {
+        if(!this.ships.isEmpty()) {
+            throw new IllegalArgumentException("There are already ships in the board.");
+        }
         if (!ships.stream().allMatch(s -> s.stream().allMatch(c -> this.onBoard(c)))) {
             throw new IllegalArgumentException("One ship is not on the board.");
         }
@@ -59,6 +62,9 @@ public class Grid {
     }
 
     public void placeShipsRandomly(int[] sizes) {
+        if(!this.ships.isEmpty()) {
+            throw new IllegalArgumentException("There are already ships in the board.");
+        }
         for (int i = 0; i < this.rows; i++) {
             for (int j = 0; j < this.cols; j++) {
                 this.hiddenBoard[i][j] = new CellState(State.NONE);
@@ -144,6 +150,10 @@ public class Grid {
 
     public CellState[][] getHiddenBoard() {
         return hiddenBoard;
+    }
+
+    public List<Ship> getShips() {
+        return ships;
     }
 
     public void shot(Cell cell) {

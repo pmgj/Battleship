@@ -37,7 +37,7 @@ public class Endpoint {
     }
 
     @OnMessage
-    public void onMessage(Session session, InputMessage message) throws EncodeException, IOException {
+    public void onMessage(Session session, InputMessage message) throws EncodeException, IOException, Exception {
         Room room;
         Battleship game;
         switch (message.getType()) {

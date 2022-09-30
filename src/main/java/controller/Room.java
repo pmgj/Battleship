@@ -2,8 +2,10 @@ package controller;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import jakarta.websocket.Session;
 import model.Battleship;
+import model.Grid;
 
 public class Room {
     private Session s1;
@@ -51,8 +53,14 @@ public class Room {
         return game;
     }
 
-    public void createGame() {
-        this.game = new Battleship(10, 10);
-        this.game.setRandomShips(new int[] { 5, 4, 3, 3, 2 });
+    public void createGame() throws Exception {
+        int rows = 10, cols = 10;
+        this.game = new Battleship();
+        Grid grid1 = new Grid(rows, cols);
+        Grid grid2 = new Grid(rows, cols);
+        int[] qtt = new int[] { 5, 4, 3, 3, 2 };
+        grid1.placeShipsRandomly(qtt);
+        grid2.placeShipsRandomly(qtt);
+        this.game.setShips(grid1, grid2);
     }
 }

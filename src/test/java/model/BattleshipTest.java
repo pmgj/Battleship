@@ -9,7 +9,10 @@ import org.junit.jupiter.api.Test;
 public class BattleshipTest {
     @Test
     public void testInitialState() {
-        Battleship b = new Battleship(10, 10);
+        int rows = 10, cols = 10;
+        Battleship b = new Battleship();
+        Grid grid1 = new Grid(rows, cols);
+        Grid grid2 = new Grid(rows, cols);
 
         try {
             List<List<Cell>> p1Ships = new ArrayList<>();
@@ -25,7 +28,7 @@ public class BattleshipTest {
             ship = List.of(new Cell(10, 5), new Cell(10, 6));
             p1Ships.add(ship);
             List<List<Cell>> p2Ships = new ArrayList<>();
-            b.setData(p1Ships, p2Ships);
+            b.setShips(p1Ships, p2Ships);
             Assertions.fail();
         } catch (Exception ex) {
         }
@@ -52,7 +55,7 @@ public class BattleshipTest {
             p2Ships.add(ship);
             ship = List.of(new Cell(1, 0), new Cell(2, 0), new Cell(3, 0));
             p2Ships.add(ship);
-            b.setData(p1Ships, p2Ships);
+            b.setShips(p1Ships, p2Ships);
             Assertions.fail();
         } catch (Exception ex) {
         }
@@ -81,7 +84,7 @@ public class BattleshipTest {
             p2Ships.add(ship);
             ship = List.of(new Cell(4, 9));
             p2Ships.add(ship);
-            b.setData(p1Ships, p2Ships);
+            b.setShips(p1Ships, p2Ships);
             Assertions.fail();
         } catch (Exception ex) {
         }
@@ -110,7 +113,7 @@ public class BattleshipTest {
             p2Ships.add(ship);
             ship = List.of(new Cell(4, 9), new Cell(5, 9));
             p2Ships.add(ship);
-            b.setData(p1Ships, p2Ships);
+            b.setShips(p1Ships, p2Ships);
             Assertions.fail();
         } catch (Exception ex) {
         }
@@ -128,6 +131,7 @@ public class BattleshipTest {
             p1Ships.add(ship);
             ship = List.of(new Cell(5, 5), new Cell(5, 6));
             p1Ships.add(ship);
+            grid1.placeShips(p1Ships);
             List<List<Cell>> p2Ships = new ArrayList<>();
             ship = List.of(new Cell(5, 7), new Cell(6, 7), new Cell(7, 7), new Cell(8, 7), new Cell(9, 7));
             p2Ships.add(ship);
@@ -139,9 +143,10 @@ public class BattleshipTest {
             p2Ships.add(ship);
             ship = List.of(new Cell(4, 9), new Cell(5, 9));
             p2Ships.add(ship);
-            b.setData(p1Ships, p2Ships);
+            grid2.placeShips(p2Ships);
+            b.setShips(grid1, grid2);
         } catch (Exception ex) {
-            Assertions.fail();
+            Assertions.fail(ex.getMessage());
         }
         try {
             b.play(Player.PLAYER1, new Cell(3, 4));
