@@ -23,24 +23,13 @@ class GUI {
         let dCell = this.coordinates(cellDestino);
         this.ws.send(JSON.stringify({ type: MessageType.MOVE_PIECE, cell: dCell }));
     }
-    printBoard(matrix) {
-        let table = document.querySelector("table");
+    printBoard(table, matrix) {
         for (let i = 0; i < matrix.length; i++) {
             for (let j = 0; j < matrix[i].length; j++) {
                 let td = table.rows[i].cells[j];
                 td.innerHTML = "";
-                td.className = "";
+                td.className = matrix[i][j].state;
                 td.onclick = this.play.bind(this);
-                switch (matrix[i][j]) {
-                    case CellState.BLOCKED:
-                        td.className = "blocked";
-                        td.innerHTML = "X";
-                        break;
-                    case CellState.PLAYER1:
-                    case CellState.PLAYER2:
-                        td.innerHTML = `<img src='images/${this.images[matrix[i][j]]}' alt=''>`;
-                        break;
-                }
             }
         }
     }
@@ -77,6 +66,7 @@ class GUI {
     }
     readData(evt) {
         let data = JSON.parse(evt.data);
+        console.log(data);
         let game = data.game;
         switch (data.type) {
             case ConnectionType.GET_ROOMS:
@@ -101,7 +91,10 @@ class GUI {
                 this.clearBoard();
                 break;
             case ConnectionType.MESSAGE:
-                this.printBoard(game.board);
+                let table = document.querySelector("table");
+                this.printBoard(table, game.grid1.hiddenBoard);
+                table = document.querySelector("table");
+                this.printBoard(table, game.grid2.board);
                 if (this.player === Player.VISITOR) {
                     this.setMessage("");
                 } else {
@@ -109,7 +102,10 @@ class GUI {
                 }
                 break;
             case ConnectionType.ENDGAME:
-                this.printBoard(game.board);
+                table = document.querySelector("table");
+                this.printBoard(table, game.grid1.hiddenBoard);
+                table = document.querySelector("table");
+                this.printBoard(table, game.grid2.board);
                 this.closeConnection(game.winner);
                 break;
         }

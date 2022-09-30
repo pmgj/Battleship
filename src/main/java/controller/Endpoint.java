@@ -51,7 +51,7 @@ public class Endpoint {
                     session.getBasicRemote().sendObject(new OutputMessage(ConnectionType.OPEN, Player.PLAYER2));
                     room.createGame();
                     game = room.getGame();
-                    sendMessage(room, new OutputMessage(ConnectionType.MESSAGE, game));
+                    sendMessage(room, ConnectionType.MESSAGE, game);
                     updateRooms();
                 }
                 break;
@@ -73,8 +73,7 @@ public class Endpoint {
                 try {
                     game.play(session == room.getS1() ? Player.PLAYER1 : Player.PLAYER2, message.getCell());
                     Winner ret = game.getWinner();
-                    sendMessage(room, new OutputMessage(
-                            ret == Winner.NONE ? ConnectionType.MESSAGE : ConnectionType.ENDGAME, game));
+                    sendMessage(room, ret == Winner.NONE ? ConnectionType.MESSAGE : ConnectionType.ENDGAME, game);
                 } catch (Exception ex) {
 
                 }
@@ -105,7 +104,7 @@ public class Endpoint {
             game.setWinner(Winner.PLAYER1);
         }
         if (s1 == session || s2 == session) {
-            sendMessage(room, new OutputMessage(ConnectionType.ENDGAME, game));
+            sendMessage(room, ConnectionType.ENDGAME, game);
         }
         List<Session> visitors = room.getVisitors();
         visitors.remove(session);
@@ -137,15 +136,15 @@ public class Endpoint {
         return rooms.stream().map(room -> new RoomMessage(room)).collect(Collectors.toList());
     }
 
-    private void sendMessage(Room room, OutputMessage msg) throws EncodeException, IOException {
+    private void sendMessage(Room room, ConnectionType connectionType, Battleship game) throws EncodeException, IOException {
         if (room.getS1().isOpen()) {
-            room.getS1().getBasicRemote().sendObject(msg);
+            room.getS1().getBasicRemote().sendObject(new OutputMessage(connectionType, game, Player.PLAYER1));
         }
         if (room.getS2().isOpen()) {
-            room.getS2().getBasicRemote().sendObject(msg);
+            room.getS1().getBasicRemote().sendObject(new OutputMessage(connectionType, game, Player.PLAYER2));
         }
         for (Session s : room.getVisitors()) {
-            s.getBasicRemote().sendObject(msg);
+            s.getBasicRemote().sendObject(new OutputMessage(connectionType, game));
         }
     }
 }
