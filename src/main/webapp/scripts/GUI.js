@@ -27,7 +27,6 @@ class GUI {
         for (let i = 0; i < matrix.length; i++) {
             for (let j = 0; j < matrix[i].length; j++) {
                 let td = table.rows[i].cells[j];
-                td.innerHTML = "";
                 td.className = matrix[i][j].state;
                 td.onclick = this.play.bind(this);
             }
@@ -65,9 +64,8 @@ class GUI {
         this.showRoom(false);
     }
     readData(evt) {
-        let data = JSON.parse(evt.data);
+        let data = JSON.parse(evt.data), table;
         console.log(data);
-        let game = data.game;
         switch (data.type) {
             case ConnectionType.GET_ROOMS:
                 let s = "";
@@ -91,22 +89,22 @@ class GUI {
                 this.clearBoard();
                 break;
             case ConnectionType.MESSAGE:
-                let table = document.querySelector("table");
-                this.printBoard(table, game.grid1.hiddenBoard);
                 table = document.querySelector("table");
-                this.printBoard(table, game.grid2.board);
+                this.printBoard(table, data.myGrid);
+                table = document.querySelector("table + table");
+                this.printBoard(table, data.opGrid);
                 if (this.player === Player.VISITOR) {
                     this.setMessage("");
                 } else {
-                    this.setMessage(game.turn === this.player ? "Your turn." : "Opponent's turn.");
+                    this.setMessage(data.turn === this.player ? "Your turn." : "Opponent's turn.");
                 }
                 break;
             case ConnectionType.ENDGAME:
                 table = document.querySelector("table");
-                this.printBoard(table, game.grid1.hiddenBoard);
-                table = document.querySelector("table");
-                this.printBoard(table, game.grid2.board);
-                this.closeConnection(game.winner);
+                this.printBoard(table, data.myGrid);
+                table = document.querySelector("table + table");
+                this.printBoard(table, data.opGrid);
+                this.closeConnection(data.winner);
                 break;
         }
     }

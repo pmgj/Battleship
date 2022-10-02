@@ -58,7 +58,7 @@ public class Grid {
 
     private int getRandomInt(int min, int max) {
         Random r = new Random();
-        return r.nextInt(max - min) + min;
+        return r.nextInt(max - min + 1) + min;
     }
 
     public void placeShipsRandomly(int[] sizes) {

@@ -141,7 +141,7 @@ public class Endpoint {
             room.getS1().getBasicRemote().sendObject(new OutputMessage(connectionType, game, Player.PLAYER1));
         }
         if (room.getS2().isOpen()) {
-            room.getS1().getBasicRemote().sendObject(new OutputMessage(connectionType, game, Player.PLAYER2));
+            room.getS2().getBasicRemote().sendObject(new OutputMessage(connectionType, game, Player.PLAYER2));
         }
         for (Session s : room.getVisitors()) {
             s.getBasicRemote().sendObject(new OutputMessage(connectionType, game));
