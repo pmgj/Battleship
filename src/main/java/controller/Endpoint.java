@@ -40,9 +40,9 @@ public class Endpoint {
     public void onMessage(Session session, InputMessage message) throws EncodeException, IOException, Exception {
         Room room;
         Battleship game;
-        switch (message.getType()) {
-            case ENTER_ROOM:
-                room = rooms.get(message.getRoom());
+        switch (message.type()) {
+            case ENTER_ROOM -> {
+                room = rooms.get(message.room());
                 if (room.getS1() == null) {
                     room.setS1(session);
                     session.getBasicRemote().sendObject(new OutputMessage(ConnectionType.OPEN, Player.PLAYER1));
@@ -54,31 +54,30 @@ public class Endpoint {
                     sendMessage(room, ConnectionType.MESSAGE, game);
                     updateRooms();
                 }
-                break;
-            case WATCH_ROOM:
-                room = rooms.get(message.getRoom());
+            }
+            case WATCH_ROOM -> {
+                room = rooms.get(message.room());
                 game = room.getGame();
                 if (game == null)
                     return;
                 room.getVisitors().add(session);
                 session.getBasicRemote().sendObject(new OutputMessage(ConnectionType.OPEN, Player.VISITOR));
                 session.getBasicRemote().sendObject(new OutputMessage(ConnectionType.MESSAGE, game));
-                break;
-            case EXIT_ROOM:
+            }
+            case EXIT_ROOM -> {
                 this.exitRoom(session);
-                break;
-            case MOVE_PIECE:
+            }
+            case MOVE_PIECE -> {
                 room = this.findRoom(session).get();
                 game = room.getGame();
                 try {
-                    game.play(session == room.getS1() ? Player.PLAYER1 : Player.PLAYER2, message.getCell());
+                    game.play(session == room.getS1() ? Player.PLAYER1 : Player.PLAYER2, message.cell());
                     Winner ret = game.getWinner();
                     sendMessage(room, ret == Winner.NONE ? ConnectionType.MESSAGE : ConnectionType.ENDGAME, game);
                 } catch (Exception ex) {
 
                 }
-            default:
-                break;
+            }
         }
     }
 
@@ -133,7 +132,7 @@ public class Endpoint {
     }
 
     private List<RoomMessage> convert(List<Room> rooms) {
-        return rooms.stream().map(room -> new RoomMessage(room)).collect(Collectors.toList());
+        return rooms.stream().map(room -> new RoomMessage(room.getS1() != null, room.getS2() != null)).collect(Collectors.toList());
     }
 
     private void sendMessage(Room room, ConnectionType connectionType, Battleship game) throws EncodeException, IOException {

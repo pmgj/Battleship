@@ -44,16 +44,16 @@ public class Grid {
             }
         }
         for(var ship : this.ships) {
-            for(var cell : ship.getPositions()) {
-                this.hiddenBoard[cell.getX()][cell.getY()] = new CellState(State.SHIP);
-                this.openBoard[cell.getX()][cell.getY()] = new CellState(State.NONE);
+            for(var cell : ship.positions()) {
+                this.hiddenBoard[cell.x()][cell.y()] = new CellState(State.SHIP);
+                this.openBoard[cell.x()][cell.y()] = new CellState(State.NONE);
             }
         }
     }
 
     private boolean onBoard(Cell cell) {
         BiFunction<Integer, Integer, Boolean> inLimit = (value, limit) -> value >= 0 && value < limit;
-        return (inLimit.apply(cell.getX(), this.rows) && inLimit.apply(cell.getY(), this.cols));
+        return (inLimit.apply(cell.x(), this.rows) && inLimit.apply(cell.y(), this.cols));
     }
 
     private int getRandomInt(int min, int max) {
@@ -108,7 +108,7 @@ public class Grid {
     }
 
     private boolean testCellPosition(Cell cell) {
-        int x = cell.getX(), y = cell.getY();
+        int x = cell.x(), y = cell.y();
         var pos = List.of(new Cell(x - 1, y - 1), new Cell(x - 1, y), new Cell(x - 1, y + 1), new Cell(x, y - 1),
                 new Cell(x, y), new Cell(x, y + 1), new Cell(x + 1, y - 1), new Cell(x + 1, y), new Cell(x + 1, y + 1));
         return pos.stream().anyMatch(c -> this.testCell(c));
@@ -116,7 +116,7 @@ public class Grid {
 
     private boolean testCell(Cell cell) {
         if (this.onBoard(cell)) {
-            int x = cell.getX(), y = cell.getY();
+            int x = cell.x(), y = cell.y();
             return this.hiddenBoard[x][y].getState() == State.SHIP;
         } else {
             return false;
@@ -126,8 +126,8 @@ public class Grid {
     public boolean endOfGame() {
         var ok = true;
         for (var ship : this.ships) {
-            for (var cell : ship.getPositions()) {
-                int x = cell.getX(), y = cell.getY();
+            for (var cell : ship.positions()) {
+                int x = cell.x(), y = cell.y();
                 if (this.hiddenBoard[x][y].getState() == State.SHIP) {
                     ok = false;
                 }
@@ -157,7 +157,7 @@ public class Grid {
     }
 
     public void shot(Cell cell) {
-        int x = cell.getX(), y = cell.getY();
+        int x = cell.x(), y = cell.y();
         if (this.hiddenBoard[x][y].getState() == State.SHOT || this.hiddenBoard[x][y].getState() == State.WATER) {
             throw new IllegalArgumentException("Cell already shot.");
         }
@@ -167,19 +167,19 @@ public class Grid {
         var newstate = this.hiddenBoard[x][y].getState() == State.SHIP ? State.SHOT : State.WATER;
         this.hiddenBoard[x][y].setState(newstate);
         this.openBoard[x][y].setState(newstate);
-        this.ships.stream().filter(ship -> ship.getPositions().stream().allMatch(c -> this.hiddenBoard[c.getX()][c.getY()].getState() != State.SHIP)).forEach(ship2 -> ship2.getPositions().stream().forEach(p -> this.shootHV(p)));
+        this.ships.stream().filter(ship -> ship.positions().stream().allMatch(c -> this.hiddenBoard[c.x()][c.y()].getState() != State.SHIP)).forEach(ship2 -> ship2.positions().stream().forEach(p -> this.shootHV(p)));
     }
 
     private void shootHV(Cell cell) {
-        int row = cell.getX(), col = cell.getY();
+        int row = cell.x(), col = cell.y();
         var cells = List.of(new Cell(row - 1, col - 1), new Cell(row - 1, col), new Cell(row - 1, col + 1), new Cell(row, col - 1), new Cell(row, col + 1), new Cell(row + 1, col - 1), new Cell(row + 1, col), new Cell(row + 1, col + 1));
-        cells.stream().filter(c1 -> this.onBoard(c1) && this.hiddenBoard[c1.getX()][c1.getY()].getState() == State.NONE).forEach(c2 -> {
-            this.hiddenBoard[c2.getX()][c2.getY()].setState(State.WATER);
-            this.openBoard[c2.getX()][c2.getY()].setState(State.WATER);
+        cells.stream().filter(c1 -> this.onBoard(c1) && this.hiddenBoard[c1.x()][c1.y()].getState() == State.NONE).forEach(c2 -> {
+            this.hiddenBoard[c2.x()][c2.y()].setState(State.WATER);
+            this.openBoard[c2.x()][c2.y()].setState(State.WATER);
         });
     }
 
     public void addObserver(Cell cell, Square square) {
-        this.hiddenBoard[cell.getX()][cell.getY()].addSquareObservers(square);
+        this.hiddenBoard[cell.x()][cell.y()].addSquareObservers(square);
     }
 }

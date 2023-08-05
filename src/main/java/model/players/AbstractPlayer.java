@@ -44,6 +44,6 @@ public abstract class AbstractPlayer {
 
     protected boolean onBoard(Cell cell) {
         BiFunction<Integer, Integer, Boolean> inLimit = (value, limit) -> value >= 0 && value < limit;
-        return (inLimit.apply(cell.getX(), this.rows) && inLimit.apply(cell.getY(), this.cols));
+        return (inLimit.apply(cell.x(), this.rows) && inLimit.apply(cell.y(), this.cols));
     }
 }

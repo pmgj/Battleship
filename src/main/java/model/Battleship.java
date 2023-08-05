@@ -23,8 +23,8 @@ public class Battleship {
         if ((grid1.getRows() != grid2.getRows()) || (grid1.getCols() != grid2.getCols())) {
             throw new Exception("The number of ships of players is different.");
         }
-        List<Integer> is1 = grid1.getShips().stream().map(s -> s.getPositions().size()).collect(Collectors.toList());
-        List<Integer> is2 = grid2.getShips().stream().map(s -> s.getPositions().size()).collect(Collectors.toList());
+        List<Integer> is1 = grid1.getShips().stream().map(s -> s.positions().size()).collect(Collectors.toList());
+        List<Integer> is2 = grid2.getShips().stream().map(s -> s.positions().size()).collect(Collectors.toList());
         Collections.sort(is1);
         Collections.sort(is2);
         for (int i = 0; i < is1.size(); i++) {

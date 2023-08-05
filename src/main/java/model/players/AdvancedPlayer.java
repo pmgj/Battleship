@@ -22,7 +22,7 @@ public class AdvancedPlayer extends AbstractPlayer {
                         return cell.get();
                     }
                     var borders = List.of(new Cell(i - 1, j), new Cell(i, j + 1), new Cell(i + 1, j), new Cell(i, j - 1));
-                    var temp = borders.stream().filter(c -> this.onBoard(c) && this.grid[c.getX()][c.getY()].getState() == State.NONE).findFirst();
+                    var temp = borders.stream().filter(c -> this.onBoard(c) && this.grid[c.x()][c.y()].getState() == State.NONE).findFirst();
                     if (!temp.isEmpty()) {
                         return temp.get();
                     }
@@ -37,7 +37,7 @@ public class AdvancedPlayer extends AbstractPlayer {
     }
 
     private Optional<Cell> shipDestroyed(Cell cell) {
-        int x = cell.getX(), y = cell.getY();
+        int x = cell.x(), y = cell.y();
         if (this.onBoard(new Cell(x, y + 1)) && this.grid[x][y + 1].getState() == State.SHOT) {
             var z = 0;
             while (this.onBoard(new Cell(x, y + z + 1)) && this.grid[x][y + ++z].getState() == State.SHOT);

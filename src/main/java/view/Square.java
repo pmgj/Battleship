@@ -35,15 +35,13 @@ public class Square extends JButton implements PropertyChangeListener {
         this.setForeground(Color.WHITE);
         this.setFont(this.getFont().deriveFont(Font.BOLD));
         switch (cellState.getState()) {
-            case WATER:
-            case NONE:
+            case WATER, NONE -> {
                 this.setBackground(Color.BLUE.brighter());
-                break;
-            case SHIP:
-            case SHOT:
+            }
+            case SHIP, SHOT -> {
                 this.setBackground(Color.RED);
                 this.setText("S");
-                break;
+            }
         }
         this.setFocusPainted(false);
     }

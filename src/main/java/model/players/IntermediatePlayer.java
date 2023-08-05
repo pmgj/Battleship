@@ -19,7 +19,7 @@ public class IntermediatePlayer extends AbstractPlayer {
                     var borders = List.of(new Cell(i - 1, j), new Cell(i, j + 1), new Cell(i + 1, j),
                             new Cell(i, j - 1));
                     var temp = borders.stream()
-                            .filter(c -> this.onBoard(c) && this.grid[c.getX()][c.getY()].getState() == State.NONE)
+                            .filter(c -> this.onBoard(c) && this.grid[c.x()][c.y()].getState() == State.NONE)
                             .findFirst().get();
                     return temp;
                 }
