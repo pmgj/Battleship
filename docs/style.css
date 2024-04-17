@@ -1,10 +1,12 @@
 main {
+    width: 960px;
     margin: 0 auto;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-    max-width: 870px;
+}
+
+main table {
+    border-collapse: separate;
+    float: left;
+    margin-left: 2em;
 }
 
 caption {
@@ -12,9 +14,14 @@ caption {
     font-size: xx-large;
 }
 
-td {
-    width: 34px;
-    height: 34px;
+table td {
+    --size: 41px;
+    width: var(--size);
+    min-width: var(--size);
+    max-width: var(--size);
+    height: var(--size);
+    min-height: var(--size);
+    max-height: var(--size);
     border: 2px solid #B4B4FF;
     text-align: center;
 }
@@ -37,6 +44,11 @@ table+table .NONE:hover {
     border: 2px solid green;
 }
 
+main .container {
+    clear: both;
+}
+
+body>main>h1,
 #message {
     text-align: center;
 }
