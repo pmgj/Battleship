@@ -21,7 +21,7 @@ class GUI {
     play(event) {
         let cellDestino = event.currentTarget;
         let dCell = this.coordinates(cellDestino);
-        this.ws.send(JSON.stringify({ type: MessageType.MOVE_PIECE, cell: dCell }));
+        this.ws.send(JSON.stringify({ type: MessageType.MOVE_PIECE, room: -1, cell: dCell }));
     }
     printBoard(table, matrix) {
         for (let i = 0; i < matrix.length; i++) {
@@ -50,22 +50,21 @@ class GUI {
     }
     enterRoom(evt) {
         let input = evt.currentTarget;
-        let obj = { type: MessageType.ENTER_ROOM, room: parseInt(input.dataset.room) };
+        let obj = { type: MessageType.ENTER_ROOM, room: parseInt(input.dataset.room), cell: null };
         this.ws.send(JSON.stringify(obj));
     }
     watchRoom(evt) {
         let input = evt.currentTarget;
-        let obj = { type: MessageType.WATCH_ROOM, room: parseInt(input.dataset.room) };
+        let obj = { type: MessageType.WATCH_ROOM, room: parseInt(input.dataset.room), cell: null };
         this.ws.send(JSON.stringify(obj));
     }
     exitRoom() {
-        let obj = { type: MessageType.EXIT_ROOM };
+        let obj = { type: MessageType.EXIT_ROOM, room: -1, cell: null };
         this.ws.send(JSON.stringify(obj));
         this.showRoom(false);
     }
     readData(evt) {
         let data = JSON.parse(evt.data), table;
-        console.log(data);
         switch (data.type) {
             case ConnectionType.GET_ROOMS:
                 let s = "";
